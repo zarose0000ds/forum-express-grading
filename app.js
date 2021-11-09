@@ -1,5 +1,9 @@
 const express = require('express')
 const exphbs = require('express-handlebars')
+const session = require('express-session')
+const flash = require('connect-flash')
+
+const passport = require('./config/passport')
 
 const app = express()
 const port = 3000
@@ -8,8 +12,33 @@ const port = 3000
 app.engine('hbs', exphbs({ defaultLayout: 'main', extname: '.hbs' }))
 app.set('view engine', 'hbs')
 
+// BODY PARSER
+app.use(express.urlencoded({ extended: true }))
+
+//SESSION
+app.use(session({
+  secret: 'RestaurantForumSecret',
+  resave: false,
+  saveUninitialized: false
+}))
+
+// PASSPORT
+app.use(passport.initialize())
+app.use(passport.session())
+
+// FLASH MESSAGE
+app.use(flash())
+
+// LOCAL PARAMS
+app.use((req, res, next) => {
+  res.locals.user = req.user
+  res.locals.success_msg = req.flash('success_msg')
+  res.locals.warning_msg = req.flash('warning_msg')
+  next()
+})
+
 // ROUTES
-require('./routes')(app)
+require('./routes')(app, passport)
 
 // LISTENING
 app.listen(port, () => {
