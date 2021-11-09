@@ -2,6 +2,7 @@ const express = require('express')
 const exphbs = require('express-handlebars')
 const session = require('express-session')
 const flash = require('connect-flash')
+const methodOverride = require('method-override')
 
 const passport = require('./config/passport')
 
@@ -36,6 +37,9 @@ app.use((req, res, next) => {
   res.locals.warning_msg = req.flash('warning_msg')
   next()
 })
+
+// METHOD OVERRIDE
+app.use(methodOverride('_method'))
 
 // ROUTES
 require('./routes')(app, passport)
