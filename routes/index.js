@@ -12,16 +12,16 @@ module.exports = (app, passport) => {
     if (req.isAuthenticated()) {
       return next()
     }
-    req.flash('warning_msg', '請先登入！')
+    req.flash('error_messages', '請先登入！')
     res.redirect('/signin')
   }
   const authenticatedAdmin = (req, res, next) => {
     if (req.isAuthenticated()) {
       if (req.user.isAdmin) { return next() }
-      req.flash('warning_msg', '存取被拒！')
+      req.flash('error_messages', '存取被拒！')
       return res.redirect('/restaurants')
     }
-    req.flash('warning_msg', '請先登入！')
+    req.flash('error_messages', '請先登入！')
     res.redirect('/signin')
   }
 

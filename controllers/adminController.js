@@ -20,7 +20,7 @@ const adminController = {
   },
   postRestaurant: (req, res) => {
     if (!req.body.name) {
-      req.flash('warning_msg', '未填寫餐廳名稱！')
+      req.flash('error_messages', '未填寫餐廳名稱！')
       return res.redirect('back')
     }
 
@@ -37,7 +37,7 @@ const adminController = {
           description: req.body.description,
           image: file ? img.data.link : null
         }).then(restaurant => {
-          req.flash('success_msg', '新增成功')
+          req.flash('success_messages', '新增成功')
           return res.redirect('/admin/restaurants')
         })
       })
@@ -50,7 +50,7 @@ const adminController = {
         description: req.body.description,
         image: null
       }).then(() => {
-        req.flash('success_msg', '新增成功')
+        req.flash('success_messages', '新增成功')
         res.redirect('/admin/restaurants')
       })
     }
@@ -62,7 +62,7 @@ const adminController = {
   },
   putRestaurant: (req, res) => {
     if (!req.body.name) {
-      req.flash('warning_msg', '未填寫餐廳名稱！')
+      req.flash('error_messages', '未填寫餐廳名稱！')
       return res.redirect('back')
     }
 
@@ -80,7 +80,7 @@ const adminController = {
             description: req.body.description,
             image: file ? img.data.link : restaurant.image
           }).then(restaurant => {
-            req.flash('success_msg', '修改成功')
+            req.flash('success_messages', '修改成功')
             res.redirect('/admin/restaurants')
           })
         })
@@ -95,7 +95,7 @@ const adminController = {
           description: req.body.description,
           image: restaurant.image
         }).then(() => {
-          req.flash('success_msg', '修改成功')
+          req.flash('success_messages', '修改成功')
           res.redirect('/admin/restaurants')
         })
       })
