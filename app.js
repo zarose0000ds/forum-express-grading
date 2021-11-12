@@ -41,6 +41,9 @@ app.use((req, res, next) => {
 // METHOD OVERRIDE
 app.use(methodOverride('_method'))
 
+// STATIC PROFILE
+app.use('/upload', express.static(__dirname + '/upload'))
+
 // ROUTES
 require('./routes')(app, passport)
 

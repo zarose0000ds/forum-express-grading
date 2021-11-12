@@ -1,3 +1,4 @@
+const fs = require('fs')
 const db = require('../models')
 const Restaurant = db.Restaurant
 
@@ -20,17 +21,37 @@ const adminController = {
       req.flash('warning_msg', '未填寫餐廳名稱！')
       return res.redirect('back')
     }
-    
-    return Restaurant.create({
-      name: req.body.name,
-      tel: req.body.tel,
-      address: req.body.address,
-      opening_hour: req.body.opening_hour,
-      description: req.body.description
-    }).then(() => {
-      req.flash('success_msg', '新增成功')
-      res.redirect('/admin/restaurants')
-    })
+
+    const { file } = req
+    if (file) {
+      fs.readFile(file.path, (e, data) => {
+        if (e) console.log(`'Error: ${e}`)
+        fs.writeFile(`upload/${file.originalname}`, data, () => {
+          return Restaurant.create({
+            name: req.body.name,
+            tel: req.body.tel,
+            address: req.body.address,
+            opening_hour: req.body.opening_hour,
+            description: req.body.description,
+            image: file ? `/upload/${file.originalname}` : null
+          }).then(restaurant => {
+            req.flash('success_msg', '新增成功')
+            return res.redirect('/admin/restaurants')
+          })
+        })
+      })
+    } else {
+      return Restaurant.create({
+        name: req.body.name,
+        tel: req.body.tel,
+        address: req.body.address,
+        opening_hour: req.body.opening_hour,
+        description: req.body.description
+      }).then(() => {
+        req.flash('success_msg', '新增成功')
+        res.redirect('/admin/restaurants')
+      })
+    }
   },
   editRestaurant: (req, res) => {
     return Restaurant.findByPk(req.params.id, { raw: true }).then(restaurant => {
@@ -43,8 +64,28 @@ const adminController = {
       return res.redirect('back')
     }
 
-    return Restaurant.findByPk(req.params.id)
-      .then(restaurant => {
+    const { file } = req
+    if (file) {
+      fs.readFile(file.path, (e, data) => {
+        if (e) console.log(`Error: ${e}`)
+        fs.writeFile(`upload/${file.originalname}`, data, () => {
+          return Restaurant.findByPk(req.params.id).then(restaurant => {
+            restaurant.update({
+              name: req.body.name,
+              tel: req.body.tel,
+              address: req.body.address,
+              opening_hour: req.body.opening_hour,
+              description: req.body.description,
+              image: file ? `/upload/${file.originalname}` : restaurant.image
+            }).then(restaurant => {
+              req.flash('success_msg', '修改成功')
+              res.redirect('/admin/restaurants')
+            })
+          })
+        })
+      })
+    } else {
+      return Restaurant.findByPk(req.params.id).then(restaurant => {
         restaurant.update({
           name: req.body.name,
           tel: req.body.tel,
@@ -56,6 +97,7 @@ const adminController = {
           res.redirect('/admin/restaurants')
         })
       })
+    }
   },
   deleteRestaurant: (req, res) => {
     return Restaurant.findByPk(req.params.id).then(restaurant => restaurant.destroy()).then(() => {
