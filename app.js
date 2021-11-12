@@ -8,6 +8,7 @@ if (process.env.NODE_ENV !== 'production') {
 }
 
 const passport = require('./config/passport')
+const helpers = require('./_helpers')
 
 const app = express()
 const port = process.env.PORT
@@ -35,7 +36,7 @@ app.use(flash())
 
 // LOCAL PARAMS
 app.use((req, res, next) => {
-  res.locals.user = req.user
+  res.locals.user = helpers.getUser(req)
   res.locals.success_msg = req.flash('success_msg')
   res.locals.warning_msg = req.flash('warning_msg')
   next()

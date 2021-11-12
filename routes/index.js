@@ -1,6 +1,5 @@
 const multer = require('multer')
 const upload = multer({ dest: 'temp/' })
-const { authenticate } = require('passport')
 
 const adminController = require('../controllers/adminController')
 const userController = require('../controllers/userController')
@@ -41,7 +40,7 @@ module.exports = (app, passport) => {
   app.get('/signup', userController.signUpPage)
   app.post('/signup', userController.signUp)
   app.get('/signin', userController.signInPage)
-  app.post('/signin', authenticate('local', {
+  app.post('/signin', passport.authenticate('local', {
     failureRedirect: '/signin',
     failureFlash: true
   }), userController.signIn)
