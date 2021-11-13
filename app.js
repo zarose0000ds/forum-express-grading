@@ -37,8 +37,8 @@ app.use(flash())
 // LOCAL PARAMS
 app.use((req, res, next) => {
   res.locals.user = helpers.getUser(req)
-  res.locals.success_msg = req.flash('success_msg')
-  res.locals.warning_msg = req.flash('warning_msg')
+  res.locals.success_messages = req.flash('success_messages')
+  res.locals.error_messages = req.flash('error_messages')
   next()
 })
 
