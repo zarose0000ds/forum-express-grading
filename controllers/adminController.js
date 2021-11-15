@@ -108,7 +108,7 @@ const adminController = {
     })
   },
   getUsers: (req, res) => {
-    return User.findAll({ raw: true }).then(users => {
+    return User.findAll({ raw: true, order: [['id', 'asc']] }).then(users => {
       return res.render('admin/users', { users })
     })
   },
