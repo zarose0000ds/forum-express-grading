@@ -1,0 +1,50 @@
+{{> message}}
+<h1 class="mb-0">餐廳後台</h1>
+<div class="mb-3">
+  <a href="/admin/restaurants">Restaurants</a> | <a href="/admin/users">Users</a> | <span class="font-weight-bold">Categories</span>
+</div>
+
+{{#if category}}
+<form class="form-inline" action="/admin/categories/{{category.id}}?_method=PUT" method="POST">
+{{else}}
+<form class="form-inline" action="/admin/categories" method="POST">
+{{/if}}
+  <input type="text" class="form-control" id="categoryName" name="categoryName" placeholder="Input" value="{{category.name}}">
+  <button type="submit" class="btn btn-primary ml-2">Submit</button>
+  {{#if category}}
+  <span class="font-weight-bold ml-2">
+    or <a class="text-dark" href="/admin/categories">Create New</a>
+  </span>
+  {{/if}}
+</form>
+
+<br />
+<br />
+
+<table class="table">
+  <thead class="thead-dark">
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">Category Name</th>
+      <th scope="col">#</th>
+    </tr>
+  </thead>
+  <tbody>
+    {{#each categories}}
+    <tr>
+      <th scope="row">{{this.id}}</th>
+      <td>{{this.name}}</td>
+      <td>
+        <button type="button" class="btn btn-link">
+          <a href="/admin/categories/{{this.id}}">
+            Edit
+          </a>
+        </button>
+        <form action="/admin/categories/{{this.id}}?_method=DELETE" method="POST" style="display: inline;">
+          <button type="submit" class="btn btn-link">Delete</button>
+        </form>
+      </td>
+    </tr>
+    {{/each}}
+  </tbody>
+</table>
