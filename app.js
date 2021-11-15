@@ -14,7 +14,7 @@ const app = express()
 const port = process.env.PORT
 
 // TEMPLATE ENGINE
-app.engine('hbs', exphbs({ defaultLayout: 'main', extname: '.hbs' }))
+app.engine('hbs', exphbs({ defaultLayout: 'main', extname: '.hbs', helpers: require('./config/handlebars-helpers') }))
 app.set('view engine', 'hbs')
 
 // BODY PARSER
