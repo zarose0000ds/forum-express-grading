@@ -1,0 +1,15 @@
+{{> message}}
+<div class="card mb-3 w-100">
+  <div class="row no-gutters">
+    <div class="col-md-3">
+      <img src="{{user.image}}" style="width: 100%; object-fit: contain;">
+    </div>
+    <div class="col-md-9">
+      <div class="card-body">
+        <h5 class="card-title">{{user.name}}</h5>
+        <p class="card-text">{{user.email}}</p>
+        <a href="/users/{{user.id}}/edit" class="btn btn-primary">Edit</a>
+      </div>
+    </div>
+  </div>
+</div>

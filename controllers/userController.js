@@ -1,5 +1,7 @@
 const bcrypt = require('bcryptjs')
 const db = require('../models')
+const imgur = require('imgur-node-api')
+const IMGUR_CLIENT_ID = process.env.IMGUR_CLIENT_ID
 const User = db.User
 
 const userController = {
@@ -41,6 +43,51 @@ const userController = {
     req.flash('success_messages', '登出成功')
     req.logout()
     res.redirect('/signin')
+  },
+  getUser: (req, res) => {
+    return User.findByPk(req.params.id).then(user => {
+      res.render('profile', { user: user.toJSON() })
+    })
+  },
+  editUser: (req, res) => {
+    return User.findByPk(req.params.id).then(user => {
+      res.render('edit', { user: user.toJSON() })
+    })
+  },
+  putUser: (req, res) => {
+    if (!req.body.name || !req.body.email) {
+      req.flash('error_messages', '所有欄位不得為空！')
+      res.redirect('back')
+    }
+
+    const { file } = req
+    if (file) {
+      imgur.setClientID(IMGUR_CLIENT_ID)
+      imgur.upload(file.path, (e, img) => {
+        if (e) console.log(e)
+        return User.findByPk(req.params.id).then(user => {
+          user.update({
+            name: req.body.name,
+            email: req.body.email,
+            image: file ? img.data.link : user.image
+          }).then(() => {
+            req.flash('success_messages', '使用者資料編輯成功')
+            res.redirect(`/users/${req.params.id}`)
+          })
+        })
+      })
+    } else {
+      return User.findByPk(req.params.id).then(user => {
+        user.update({
+          name: req.body.name,
+          email: req.body.email,
+          image: user.image
+        }).then(() => {
+          req.flash('success_messages', '使用者資料編輯成功')
+          res.redirect(`/users/${req.params.id}`)
+        })
+      })
+    }
   }
 }
 

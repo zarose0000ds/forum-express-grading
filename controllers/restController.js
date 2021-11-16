@@ -31,8 +31,6 @@ const restController = {
       const prev = page - 1 < 1 ? 1 : page - 1
       const next = page + 1 > pages ? pages : page + 1
 
-      console.log(page, pages, totalPage, prev, next)
-
       // CLEAN UP RESTAURANT DATA
       const restaurants = result.rows.map(r => ({
         ...r,
