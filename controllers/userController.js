@@ -2,6 +2,9 @@ const bcrypt = require('bcryptjs')
 const db = require('../models')
 const imgur = require('imgur-node-api')
 const IMGUR_CLIENT_ID = process.env.IMGUR_CLIENT_ID
+
+const helpers = require('../_helpers')
+
 const User = db.User
 const Restaurant = db.Restaurant
 const Comment = db.Comment
@@ -55,6 +58,10 @@ const userController = {
     })
   },
   editUser: (req, res) => {
+    if (Number(req.params.id) !== Number(helpers.getUser(req).id)) {
+      req.flash('error_messages', '存取被拒！')
+      return res.redirect(`/users/${req.params.id}`)
+    }
     return User.findByPk(req.params.id).then(user => {
       res.render('edit', { user: user.toJSON() })
     })
