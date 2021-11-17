@@ -3,6 +3,7 @@ const Restaurant = db.Restaurant
 const User = db.User
 const Category = db.Category
 const Comment = db.Comment
+const Favorite = db.Favorite
 
 const PAGE_LIMIT = 10
 
@@ -35,7 +36,8 @@ const restController = {
       const restaurants = result.rows.map(r => ({
         ...r,
         description: r.description.substring(0, 50),
-        categoryName: r.Category.name
+        categoryName: r.Category.name,
+        isFavorited: req.user.FavoritedRestaurants.map(item => item.id).includes(r.id)
       }))
       Category.findAll({ raw: true, nest: true }).then(categories => {
         return res.render('restaurants', { restaurants, categories, categoryId, page, totalPage, prev, next })
@@ -45,12 +47,14 @@ const restController = {
   getRestaurant: (req, res) => {
     Restaurant.findByPk(req.params.id, { include: [
       Category,
+      { model: User, as: 'FavoritedUsers' },
       { model: Comment, include: [User] }
     ] }).then(restaurant => {
+      const isFavorited = restaurant.FavoritedUsers.map(item => item.id).includes(req.user.id)
       restaurant.update({
         viewCounts: restaurant.viewCounts + 1
       })
-      return res.render('restaurant', { restaurant: restaurant.toJSON() })
+      return res.render('restaurant', { restaurant: restaurant.toJSON(), isFavorited })
     })
   },
   getFeeds: (req, res) => {
