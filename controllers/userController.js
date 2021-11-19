@@ -134,6 +134,7 @@ const userController = {
   },
   getTopUser: (req, res) => {
     return User.findAll({
+      order: [['id', 'desc']],
       include: [
         { model: User, as: 'Followers' }
       ]
