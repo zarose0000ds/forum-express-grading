@@ -111,14 +111,12 @@ const userController = {
     }).then(() => res.redirect('back'))
   },
   removeFavorite: (req, res) => {
-    return Favorite.findOne({
+    return Favorite.destroy({
       where: {
         UserId: req.user.id,
         RestaurantId: req.params.restaurantId
       }
-    }).then(favorite => {
-      favorite.destroy().then(() => res.redirect('back'))
-    })
+    }).then(() => res.redirect('back'))
   },
   addLike: (req, res) => {
     return Like.create({
@@ -136,15 +134,13 @@ const userController = {
   },
   getTopUser: (req, res) => {
     return User.findAll({
-      raw: true,
-      nest: true,
       include: [
         { model: User, as: 'Followers' }
       ]
     }).then(users => {
       users = users.map(user => ({
-        ...user,
-        FollowerCount: user.Followers.length || 0,
+        ...user.dataValues,
+        FollowerCount: user.Followers.length,
         isFollowed: req.user.Followings.map(item => item.id).includes(user.id)
       }))
       users = users.sort((a, b) => b.FollowerCount - a.FollowerCount)

@@ -1,0 +1,65 @@
+<ul class="nav nav-tabs">
+  <li class="nav-item">
+    <a class="nav-link" href="/restaurants">首頁</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="/restaurants/feeds">最新動態</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="/users/top">美食達人</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link active" href="/restaurants/top">Top 10 人氣餐廳</a>
+  </li>
+</ul>
+<br /><br />
+<h1>人氣餐廳</h1>
+<hr>
+<div class="d-flex flex-wrap mx-auto" style="width: 60%;">
+  {{#each restaurants}}
+  <div class="w-100 pb-4" style="position: relative;">
+    <div class="text-center"
+         style="position: absolute; top: 3px; left: 3px; z-index: 1; width: 30px; border-radius: 50%; aspect-ratio: 1 / 1;
+                background: {{#ifCond this.rank 1}}#ffd700{{/ifCond}}
+                            {{#ifCond this.rank 2}}#c0c0c0{{/ifCond}}
+                            {{#ifCond this.rank 3}}#b87333{{/ifCond}}
+                            {{#ifAbove this.rank 4}}#add8e6{{/ifAbove}}"
+    >
+      <h4 class="m-0 h-100">{{this.rank}}</h4>
+    </div>
+    <div class="card shadow-sm h-100">
+      <div class="row">
+        <img class="col-md-5 card-img-top" src="{{this.image}}" style="object-fit: cover;" alt="Card image cap">
+        <div class="col-md-7 card-body">
+          <h5>{{this.name}}</h5>
+          <p class="card-text">
+            <span class="badge badge-secondary">收藏數：{{this.favoritedCount}}</span>
+          </p>
+          <p class="card-text">{{this.description}}</p>
+          <div class="d-flex" style="gap: 5px;">
+            <a href="/restaurants/{{this.id}}" class="btn btn-primary">Show</a>
+            {{#if this.isFavorited }}
+            <form action="/favorite/{{this.id}}?_method=DELETE" method="POST">
+              <button type="submit" class="btn btn-danger">移除最愛</button>
+            </form>
+            {{else}}
+            <form action="/favorite/{{this.id}}" method="POST">
+              <button type="submit" class="btn btn-primary">加到最愛</button>
+            </form>
+            {{/if}}
+            {{#if this.isLiked }}
+            <form action="/like/{{this.id}}?_method=DELETE" method="POST">
+              <button type="submit" class="btn btn-danger">Un-Like</button>
+            </form>
+            {{else}}
+            <form action="/like/{{this.id}}" method="POST">
+              <button type="submit" class="btn btn-primary">Like</button>
+            </form>
+            {{/if}}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  {{/each}}
+</div>
