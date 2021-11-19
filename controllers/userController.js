@@ -61,7 +61,10 @@ const userController = {
         { model: User, as: 'Followers' }
       ]
     }).then(user => {
-      user = user.toJSON()
+      user = {
+        ...user.toJSON(),
+        isFollowed: req.user.Followings.map(item => item.id).includes(user.id)
+      }
       // REMOVE DUPLICATED RESTAURANTS ON THE COMMENTS LIST
       const tempRestaurantId = user.Comments.map(c => c.RestaurantId)
       for (let i = 0; i < tempRestaurantId.length; i++) {
@@ -71,7 +74,6 @@ const userController = {
           i--
         }
       }
-      console.log(user)
       res.render('profile', { user })
     })
   },

@@ -10,6 +10,16 @@
         <p class="card-text">{{user.email}}</p>
         {{#ifCond loginUser.id user.id}}
         <a href="/users/{{../user.id}}/edit" class="btn btn-primary">Edit</a>
+        {{else}}
+        {{#if ../user.isFollowed }}
+        <form action="/following/{{../user.id}}?_method=DELETE" method="POST" style="display: contents;">
+          <button type="submit" class="btn btn-danger">取消追蹤</button>
+        </form>
+        {{else}}
+        <form action="/following/{{../user.id}}" method="POST" style="display: contents;">
+          <button type="submit" class="btn btn-primary">追蹤</button>
+        </form>
+        {{/if}}
         {{/ifCond}}
       </div>
     </div>
