@@ -54,10 +54,25 @@ const userController = {
   },
   getUser: (req, res) => {
     return User.findByPk(req.params.id, {
-      nest: true,
-      include: [{ model: Comment, include: [Restaurant] }],
+      include: [
+        { model: Comment, include: [Restaurant] },
+        { model: Restaurant, as: 'FavoritedRestaurants' },
+        { model: User, as: 'Followings' },
+        { model: User, as: 'Followers' }
+      ]
     }).then(user => {
-      res.render('profile', { user: user.toJSON() })
+      user = user.toJSON()
+      // REMOVE DUPLICATED RESTAURANTS ON THE COMMENTS LIST
+      const tempRestaurantId = user.Comments.map(c => c.RestaurantId)
+      for (let i = 0; i < tempRestaurantId.length; i++) {
+        if (tempRestaurantId.indexOf(tempRestaurantId[i], i + 1) >= 0) {
+          tempRestaurantId.splice(i, 1)
+          user.Comments.splice(i, 1)
+          i--
+        }
+      }
+      console.log(user)
+      res.render('profile', { user })
     })
   },
   editUser: (req, res) => {

@@ -1,5 +1,5 @@
 {{> message}}
-<div class="card mb-3 w-100">
+<div class="card mb-4 w-100">
   <div class="row no-gutters">
     <div class="col-md-3">
       <img src="{{user.image}}" style="width: 100%; object-fit: contain;">
@@ -8,25 +8,91 @@
       <div class="card-body">
         <h5 class="card-title">{{user.name}}</h5>
         <p class="card-text">{{user.email}}</p>
-        <a href="/users/{{user.id}}/edit" class="btn btn-primary">Edit</a>
+        {{#ifCond loginUser.id user.id}}
+        <a href="/users/{{../user.id}}/edit" class="btn btn-primary">Edit</a>
+        {{/ifCond}}
       </div>
     </div>
   </div>
 </div>
 
-<div class="card">
-  <div class="card-header">
-    <b>{{user.Comments.length}} 已評論餐廳</b>
-  </div>
-  <div class="card-body container mx-1">
-    <div class="row">
-      {{#each user.Comments}}
-      <div class="col-md-1 p-2" style="aspect-ratio: 1;" data-toggle="tooltip" data-placement="bottom" title="{{this.Restaurant.name}}">
-        <a href="/restaurants/{{this.RestaurantId}}">
-          <img src="{{this.Restaurant.image}}" style="width: 100%; height: 100%; object-fit: cover;">
-        </a>
+<div class="w-100">
+  <div class="row" style="row-gap: 1rem;">
+    <!-- followings -->
+    <div class="col-md-4">
+      <div class="card" style="{{#ifCond user.Followings.length 0}}background: #ddd;{{/ifCond}}">
+        <div class="card-header">
+          <b>{{user.Followings.length}} followings (追蹤者)</b>
+        </div>
+        <div class="card-body px-1">
+          <div class="d-flex flex-wrap justify-content-start">
+            {{#each user.Followings}}
+            <div class="mx-2" style="aspect-ratio: 1;" data-toggle="tooltip" data-placement="bottom" title="{{this.name}}">
+              <a href="/users/{{this.id}}">
+                <img src="{{this.image}}" style="width: 3rem; height: 100%; object-fit: cover;">
+              </a>
+            </div>
+            {{/each}}
+          </div>
+        </div>
       </div>
-      {{/each}}
+    </div>
+    <!-- comments -->
+    <div class="col-md-8">
+      <div class="card" style="{{#ifCond user.Comments.length 0}}background: #ddd;{{/ifCond}}">
+        <div class="card-header">
+          <b>{{user.Comments.length}} 已評論餐廳</b>
+        </div>
+        <div class="card-body px-1">
+          <div class="d-flex flex-wrap justify-content-start">
+            {{#each user.Comments}}
+            <div class="mx-2" style="aspect-ratio: 1;" data-toggle="tooltip" data-placement="bottom" title="{{this.Restaurant.name}}">
+              <a href="/restaurants/{{this.RestaurantId}}">
+                <img src="{{this.Restaurant.image}}" style="width: 3rem; height: 100%; object-fit: cover;">
+              </a>
+            </div>
+            {{/each}}
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- followers -->
+    <div class="col-md-4">
+      <div class="card" style="{{#ifCond user.Followers.length 0}}background: #ddd;{{/ifCond}}">
+        <div class="card-header">
+          <b>{{user.Followers.length}} followers (追隨者)</b>
+        </div>
+        <div class="card-body px-1">
+          <div class="d-flex flex-wrap justify-content-start">
+            {{#each user.Followers}}
+            <div class="mx-2" style="aspect-ratio: 1;" data-toggle="tooltip" data-placement="bottom" title="{{this.name}}">
+              <a href="/users/{{this.id}}">
+                <img src="{{this.image}}" style="width: 3rem; height: 100%; object-fit: cover;">
+              </a>
+            </div>
+            {{/each}}
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- favorites -->
+    <div class="col-md-8">
+      <div class="card" style="{{#ifCond user.FavoritedRestaurants.length 0}}background: #ddd;{{/ifCond}}">
+        <div class="card-header">
+          <b>{{user.FavoritedRestaurants.length}} 收藏的餐廳</b>
+        </div>
+        <div class="card-body px-1">
+          <div class="d-flex flex-wrap justify-content-start">
+            {{#each user.FavoritedRestaurants}}
+            <div class="mx-2" style="aspect-ratio: 1;" data-toggle="tooltip" data-placement="bottom" title="{{this.name}}">
+              <a href="/restaurants/{{this.id}}">
+                <img src="{{this.image}}" style="width: 3rem; height: 100%; object-fit: cover;">
+              </a>
+            </div>
+            {{/each}}
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </div>
