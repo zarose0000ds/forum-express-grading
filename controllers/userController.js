@@ -10,6 +10,7 @@ const Restaurant = db.Restaurant
 const Comment = db.Comment
 const Favorite = db.Favorite
 const Like = db.Like
+const Followship = db.Followship
 
 const userController = {
   signUpPage: (req, res) => {
@@ -130,6 +131,37 @@ const userController = {
       where: {
         UserId: helpers.getUser(req).id,
         RestaurantId: req.params.restaurantId
+      }
+    }).then(() => res.redirect('back'))
+  },
+  getTopUser: (req, res) => {
+    return User.findAll({
+      raw: true,
+      nest: true,
+      include: [
+        { model: User, as: 'Followers' }
+      ]
+    }).then(users => {
+      users = users.map(user => ({
+        ...user,
+        FollowerCount: user.Followers.length || 0,
+        isFollowed: req.user.Followings.map(item => item.id).includes(user.id)
+      }))
+      users = users.sort((a, b) => b.FollowerCount - a.FollowerCount)
+      return res.render('topUser', { users })
+    })
+  },
+  addFollowing: (req, res) => {
+    return Followship.create({
+      followerId: req.user.id,
+      followingId: req.params.userId
+    }).then(() => res.redirect('back'))
+  },
+  removeFollowing: (req, res) => {
+    return Followship.destroy({
+      where: {
+        followerId: req.user.id,
+        followingId: req.params.userId
       }
     }).then(() => res.redirect('back'))
   }
