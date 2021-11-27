@@ -49,7 +49,7 @@ app.use(methodOverride('_method'))
 app.use('/upload', express.static(__dirname + '/upload'))
 
 // ROUTES
-require('./routes')(app, passport)
+require('./routes')(app)
 
 // LISTENING
 app.listen(port, () => {
