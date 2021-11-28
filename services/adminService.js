@@ -57,6 +57,46 @@ const adminService = {
         cb({ status: 'success', message: 'restaurant was successfully created' })
       })
     }
+  },
+  putRestaurant: (req, res, cb) => {
+    if (!req.body.name) {
+      return cb({ status: 'error', message: "name doesn't exist" })
+    }
+
+    const { file } = req
+    if (file) {
+      imgur.setClientID(IMGUR_CLIENT_ID)
+      imgur.upload(file.path, (e, img) => {
+        if (e) console.log(e)
+        return Restaurant.findByPk(req.params.id).then(restaurant => {
+          restaurant.update({
+            name: req.body.name,
+            tel: req.body.tel,
+            address: req.body.address,
+            opening_hour: req.body.opening_hour,
+            description: req.body.description,
+            image: file ? img.data.link : restaurant.image,
+            CategoryId: req.body.categoryId
+          }).then(restaurant => {
+            cb({ status: 'success', message: 'restaurant was successfully edited' })
+          })
+        })
+      })
+    } else {
+      return Restaurant.findByPk(req.params.id).then(restaurant => {
+        restaurant.update({
+          name: req.body.name,
+          tel: req.body.tel,
+          address: req.body.address,
+          opening_hour: req.body.opening_hour,
+          description: req.body.description,
+          image: restaurant.image,
+          CategoryId: req.body.categoryId
+        }).then(() => {
+          cb({ status: 'success', message: 'restaurant was successfully edited' })
+        })
+      })
+    }
   }
 }
 
