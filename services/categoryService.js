@@ -19,6 +19,16 @@ const categoryService = {
     Category.create({ name: req.body.categoryName }).then(() => {
       cb({ status: 'success', message: '類型建立成功' })
     })
+  },
+  putCategory: (req, res, cb) => {
+    if (!req.body.categoryName) {
+      return cb({ status: 'error', message: '請輸入類型名稱！' })
+    }
+    Category.findByPk(req.params.id).then(category => {
+      category.update({
+        name: req.body.categoryName
+      }).then(() => cb({ status: 'success', message: '類型編輯成功' }))
+    })
   }
 }
 
