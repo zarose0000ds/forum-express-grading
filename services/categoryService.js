@@ -29,6 +29,13 @@ const categoryService = {
         name: req.body.categoryName
       }).then(() => cb({ status: 'success', message: '類型編輯成功' }))
     })
+  },
+  deleteCategory: (req, res, cb) => {
+    return Category.findByPk(req.params.id).then(category => {
+      category.destroy().then(() => {
+        cb({ status: 'success', message: '' })
+      })
+    })
   }
 }
 
