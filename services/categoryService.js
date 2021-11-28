@@ -11,6 +11,14 @@ const categoryService = {
       }
       cb({ categories })
     })
+  },
+  postCategory: (req, res, cb) => {
+    if (!req.body.categoryName) {
+      return cb({ status: 'error', message: '請輸入類型名稱！' })
+    }
+    Category.create({ name: req.body.categoryName }).then(() => {
+      cb({ status: 'success', message: '類型建立成功' })
+    })
   }
 }
 

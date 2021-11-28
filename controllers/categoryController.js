@@ -10,11 +10,12 @@ const categoryController = {
     })
   },
   postCategory: (req, res) => {
-    if (!req.body.categoryName) {
-      req.flash('error_messages', '請輸入類型名稱！')
-      return res.redirect('back')
-    }
-    return Category.create({ name: req.body.categoryName }).then(() => {
+    categoryService.postCategory(req, res, data => {
+      if (data.status === 'error') {
+        req.flash('error_messages', data.message)
+        return res.redirect('back')
+      }
+      req.flash('success_messages', data.message)
       res.redirect('/admin/categories')
     })
   },
