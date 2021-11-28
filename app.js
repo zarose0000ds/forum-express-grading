@@ -19,6 +19,7 @@ app.set('view engine', 'hbs')
 
 // BODY PARSER
 app.use(express.urlencoded({ extended: true }))
+app.use(express.json())
 
 //SESSION
 app.use(session({

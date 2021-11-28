@@ -25,43 +25,14 @@ const adminController = {
     })
   },
   postRestaurant: (req, res) => {
-    if (!req.body.name) {
-      req.flash('error_messages', '未填寫餐廳名稱！')
-      return res.redirect('back')
-    }
-
-    const { file } = req
-    if (file) {
-      imgur.setClientID(IMGUR_CLIENT_ID)
-      imgur.upload(file.path, (e, img) => {
-        if (e) console.log(e)
-        return Restaurant.create({
-          name: req.body.name,
-          tel: req.body.tel,
-          address: req.body.address,
-          opening_hour: req.body.opening_hour,
-          description: req.body.description,
-          image: file ? img.data.link : null,
-          CategoryId: req.body.categoryId
-        }).then(restaurant => {
-          req.flash('success_messages', '新增成功')
-          return res.redirect('/admin/restaurants')
-        })
-      })
-    } else {
-      return Restaurant.create({
-        name: req.body.name,
-        tel: req.body.tel,
-        address: req.body.address,
-        opening_hour: req.body.opening_hour,
-        description: req.body.description,
-        image: null,
-        CategoryId: req.body.categoryId
-      }).then(() => {
-        req.flash('success_messages', '新增成功')
-        res.redirect('/admin/restaurants')
-      })
-    }
+    adminService.postRestaurant(req, res, data => {
+      if(data.status === 'error') {
+        req.flash('error_messages', data.message)
+        return res.redirect('back')
+      }
+      req.flash('success_messages', data.message)
+      res.redirect('/admin/restaurants')
+    })
   },
   editRestaurant: (req, res) => {
     Category.findAll({ raw: true, nest: true }).then(categories => {
@@ -114,8 +85,10 @@ const adminController = {
     }
   },
   deleteRestaurant: (req, res) => {
-    return Restaurant.findByPk(req.params.id).then(restaurant => restaurant.destroy()).then(() => {
-      res.redirect('/admin/restaurants')
+    adminService.deleteRestaurant(req, res ,data => {
+      if (data.status === 'success') {
+        return res.redirect('/admin/restaurants')
+      }
     })
   },
   getUsers: (req, res) => {
